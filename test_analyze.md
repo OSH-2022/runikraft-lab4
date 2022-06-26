@@ -823,17 +823,17 @@ Min latency(s):       0.0468526
 
 ### osd numbers 对性能的影响
 
-![](./Osd_Read_Bandwidth.jpg)
+![](./src/Osd_Read_Bandwidth.jpg)
 
-![Osd_Read_IOPS](./Osd_Read_IOPS.jpg)
+![Osd_Read_IOPS](./src/Osd_Read_IOPS.jpg)
 
-![Osd_Read_Latency](./Osd_Read_Latency.jpg)
+![Osd_Read_Latency](./src/Osd_Read_Latency.jpg)
 
-![Osd_Write_Bandwidth](./Osd_Write_Bandwidth.jpg)
+![Osd_Write_Bandwidth](./src/Osd_Write_Bandwidth.jpg)
 
-![Osd_Write_IOPS](./Osd_Write_IOPS.jpg)
+![Osd_Write_IOPS](./src/Osd_Write_IOPS.jpg)
 
-![Osd_Write_Latency](./Osd_Write_Latency.jpg)
+![Osd_Write_Latency](./src/Osd_Write_Latency.jpg)
 
 我们使用概率论与数理统计的知识进行分析，有力地证明 bandwidth 和 latency 两个指标优化达到了20%。
 
@@ -1017,19 +1017,19 @@ Min latency(s):       0.0468526
 
 ### pg numbers 对性能的影响
 
-![Read_Bandwidth](./Read_Bandwidth.jpg)
+![Read_Bandwidth](./src/Read_Bandwidth.jpg)
 
-![Read_IOPS](./Read_IOPS.jpg)
+![Read_IOPS](./src/Read_IOPS.jpg)
 
-![Read_Latency](./Read_Latency.jpg)
+![Read_Latency](./src/Read_Latency.jpg)
 
 可以看出，顺序读与随机读的性能，都是pg=32时最优，增大到64或减小到16都会使性能下降。
 
-![Write_Bandwidth](./Write_Bandwidth.jpg)
+![Write_Bandwidth](./src/Write_Bandwidth.jpg)
 
-![Write_IOPS](./Write_IOPS.jpg)
+![Write_IOPS](./src/Write_IOPS.jpg)
 
-![Write_Latency](./Write_Latency.jpg)
+![Write_Latency](./src/Write_Latency.jpg)
 
 可以看出，写的性能在 `pg = 8` 时最优，增大 pg 数会使写性能降低，这与读的性能相反。
 
