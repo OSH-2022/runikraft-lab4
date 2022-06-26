@@ -886,7 +886,7 @@ Min latency(s):       0.0468526
 |  8   |                         471.616                          |
 |  9   |                         466.206                          |
 
-在99.5%置信度下，要检验问题：“ 2osd 的![](http://latex.codecogs.com/svg.latex?bw_{avg})比 1osd 的高20%”，即检验" 2osd 的![](http://latex.codecogs.com/svg.latex?bw_{avg})大于 1osd 的![](http://latex.codecogs.com/svg.latex?1.2\times bw_{avg})"。将其设置为对立假设，假设检验问题为
+在99.5%置信度下，要检验问题：“ 2osd 的![](http://latex.codecogs.com/svg.latex?bw_{avg})比 1osd 的高20%”，即检验" 2osd 的![](http://latex.codecogs.com/svg.latex?bw_{avg})大于 1osd 的![](http://latex.codecogs.com/svg.latex?1.2\times bw_{avg})“。将其设置为对立假设，假设检验问题为
 
 ![](http://latex.codecogs.com/svg.latex?H_0:\mu_1\geq\mu_2\leftrightarrow H_1: \mu_1 < \mu_2)
 
@@ -906,7 +906,7 @@ Min latency(s):       0.0468526
 
 代入得![](http://latex.codecogs.com/svg.latex?T\approx -5.967 < -t_{18}(0.005)=-2.878)，因此有足够的证据否定原假设，认为对立假设成立，即可以认为 2osd 的 write bandwidth 比 1osd 的 write bandwidth 性能高20%。
 
-在99.5%置信度下，要检验问题：“ 3osd 的![](http://latex.codecogs.com/svg.latex?bw_{avg})比 1osd 的高20%”，即检验" 3osd 的$bw_{avg}$大于osd1的![](http://latex.codecogs.com/svg.latex?1.2\times bw_{avg})"。将其设置为对立假设，假设检验问题为
+在99.5%置信度下，要检验问题：“ 3osd 的![](http://latex.codecogs.com/svg.latex?bw_{avg})比 1osd 的高20%”，即检验" 3osd 的$bw_{avg}$大于osd1的![](http://latex.codecogs.com/svg.latex?1.2\times bw_{avg})“。将其设置为对立假设，假设检验问题为
 
 ![](http://latex.codecogs.com/svg.latex?H_0:\mu_1 \geq \mu_2 \leftrightarrow H_1: \mu_1 < \mu_2)
 
@@ -928,7 +928,7 @@ Min latency(s):       0.0468526
 
 #### latency
 
-> $lat_{avg}$: average latency in 1 second
+> ![](http://latex.codecogs.com/svg.latex?lat_{avg}): average latency in 1 second
 
 1osd：
 
@@ -975,7 +975,7 @@ Min latency(s):       0.0468526
 |   8   |    0.0338197    |
 |   9   |    0.0342532    |
 
-在99.5%置信度下，要检验问题：“ 2osd 的![](http://latex.codecogs.com/svg.latex?lat_{avg})比 1osd 的低20%”，即检验" 2osd 的![](http://latex.codecogs.com/svg.latex?lat_{avg})小于 1osd 的![](http://latex.codecogs.com/svg.latex?0.8\times lat_{avg})"。将其设置为对立假设，假设检验问题为
+在99.5%置信度下，要检验问题：“ 2osd 的![](http://latex.codecogs.com/svg.latex?lat_{avg})比 1osd 的低20%”，即检验" 2osd 的![](http://latex.codecogs.com/svg.latex?lat_{avg})小于 1osd 的![](http://latex.codecogs.com/svg.latex?0.8\times lat_{avg})“。将其设置为对立假设，假设检验问题为
 
 ![](http://latex.codecogs.com/svg.latex?H_0:\mu_1 \leq \mu_2 \leftrightarrow H_1: \mu_1 > \mu_2)
 
@@ -995,7 +995,7 @@ Min latency(s):       0.0468526
 
 代入得![](http://latex.codecogs.com/svg.latex?T\approx 10.946 > t_{18}(0.005)=2.878)，因此有足够的证据否定原假设，认为对立假设成立，即可以认为 2osd 的 write latency 比 1osd 的 write latency 性能高20%。
 
-在99.5%置信度下，要检验问题：“ 3osd 的![](http://latex.codecogs.com/svg.latex?lat_{avg})比 1osd 的低20%”，即检验" 3osd 的![](http://latex.codecogs.com/svg.latex?lat_{avg})小于 1osd 的![](http://latex.codecogs.com/svg.latex?0.8\times lat_{avg})"。将其设置为对立假设，假设检验问题为
+在99.5%置信度下，要检验问题：“ 3osd 的![](http://latex.codecogs.com/svg.latex?lat_{avg})比 1osd 的低20%”，即检验" 3osd 的![](http://latex.codecogs.com/svg.latex?lat_{avg})小于 1osd 的![](http://latex.codecogs.com/svg.latex?0.8\times lat_{avg})“。将其设置为对立假设，假设检验问题为
 
 ![](http://latex.codecogs.com/svg.latex?H_0:\mu_1 \leq \mu_2 \leftrightarrow H_1: \mu_1 > \mu_2)
 
