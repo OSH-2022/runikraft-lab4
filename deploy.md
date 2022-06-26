@@ -1,4 +1,4 @@
-# Ceph部署文档（单机版，分布式，docker）
+# Ceph部署文档
 
 ## 实验环境
 
@@ -10,38 +10,36 @@
 - VM：VMware Workstation 16.2.3 build-19376536
 - VM-OS：CentOS 7
 
-## 安装VMware
+## 环境配置
 
-## 在VMware下安装CentOS
+### 安装VMware
 
-增加硬盘：
+### 在VMware下安装CentOS
 
-在VMware的Devices栏目中，新建设备，添加SCSI与NVMe硬盘各一块。
+- 增加硬盘：在VMware的Devices栏目中，新建设备，添加SCSI与NVMe硬盘各一块。
 
-配置网卡：
+- 配置网卡：打开Virtual Network Editor，将vmnet8的IP地址改为192.168.153.1。在VMware的Devices栏目中，新建设备，添加一个选择vmnet8的网卡。
 
-打开Virtual Network Editor，将vmnet8的IP地址改为192.168.153.1。在VMware的Devices栏目中，新建设备，添加一个选择vmnet8的网卡。
+- 配置网络：
 
-配置网络：
+  ```bash
+  cd /etc/sysconfig/network-scripts/
+  sudo vi ifcfg-ens33
+  ```
 
-```bash
-cd /etc/sysconfig/network-scripts/
-sudo vi ifcfg-ens33
-```
+  将`ONBOOT=no`修改为`ONBOOT=yes`，IPV4与DNS服务器地址改为192.168.31.10。
 
-将`ONBOOT=no`修改为`ONBOOT=yes`，IPV4与DNS服务器地址改为192.168.31.10。
+  类似地将`ifcfg-ens35`文件中的`ONBOOT=no`修改为`ONBOOT=yes`，IPV4与DNS服务器地址改为192.168.153.10。
 
-类似地将`ifcfg-ens35`文件中的`ONBOOT=no`修改为`ONBOOT=yes`，IPV4与DNS服务器地址改为192.168.153.10。
+- 重新启动网络服务：
 
-重新启动网络服务：
+  ```bash
+  systemctl restart network
+  ```
 
-```bash
-systemctl restart network
-```
+  使用VMware的clone方式创建3台与之相同的虚拟机，并将其IP地址最后一段分别改为11，12，13。
 
-使用VMware的clone方式创建3台与之相同的虚拟机，并将其IP地址最后一段分别改为11，12，13。
-
-## SSH免密登录
+### SSH免密登录
 
 client节点作为deploy节点，在client节点执行
 
@@ -52,7 +50,7 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub root@192.168.153.12
 ssh-copy-id -i ~/.ssh/id_rsa.pub root@192.168.153.13
 ```
 
-## 配置本地主机名解析
+### 配置本地主机名解析
 
 在client节点执行
 
@@ -66,24 +64,24 @@ scp /etc/hosts node2:/etc/hosts
 scp /etc/hosts node3:/etc/hosts
 ```
 
-## 配置安全策略
+### 配置安全策略
 
-在client，node1，node2，node3节点上都关闭selinux：
+- 在client，node1，node2，node3节点上都关闭selinux：
 
-```bash
-vi /etc/selinux/config
-```
+  ```bash
+  vi /etc/selinux/config
+  ```
 
-将`SELINUX`值设置为`disabled`。
+  将`SELINUX`值设置为`disabled`。
 
-在client，node1，node2，node3节点上都关闭防火墙。
+- 在client，node1，node2，node3节点上都关闭防火墙：
 
-```bash
-systemctl stop firewalld
-systemctl disable firewalld
-```
+  ```bash
+  systemctl stop firewalld
+  systemctl disable firewalld
+  ```
 
-## 配置ntp时间同步
+### 配置ntp时间同步
 
 - client节点作为ntp server，在client、node1、node2、node3上安装ntp。
 
@@ -111,7 +109,7 @@ systemctl disable firewalld
   ntpq -pn
   ```
 
-## 配置yum源
+### 配置yum源
 
 - 添加CentOS7的yum源
 
@@ -152,7 +150,9 @@ systemctl disable firewalld
   gpgcheck=0
   ```
 
-## ceph相关的包的安装
+## 软件安装
+
+### ceph相关的包的安装
 
 - 在部署节点（client）安装ceph的部署工具
 
@@ -173,7 +173,7 @@ systemctl disable firewalld
   yum install -y ceph ceph-mon ceph-osd ceph-mds ceph-radosgw ceph-mgr
   ```
 
-## 部署monitor
+### 部署moni3tor
 
 - node1作为monitor节点，在部署结点（client）创建一个工作目录，后续的命令在该目录下执行，产生的配置文件保存在该目录中。
 
@@ -202,7 +202,7 @@ systemctl disable firewalld
   ceph-deplioy mon add node3
   ```
 
-## 部署mgr
+### 部署mgr
 
 - node1作为mgr节点，在部署节点（client）执行
 
@@ -217,7 +217,7 @@ systemctl disable firewalld
   ceph-deploy mgr create node2 node3
   ```
 
-## 部署osd
+### 部署osd
 
 - 确认每个节点的硬盘情况
 
@@ -244,7 +244,9 @@ systemctl disable firewalld
   ceph-deploy osd create --data /dev/sdb --journal /dev/nvme0n1 --filestore node3
   ```
 
-## 使用systemd管理ceph服务
+## 建立存储
+
+### 使用systemd管理ceph服务
 
 - 列出所有的ceph服务
 
@@ -280,7 +282,7 @@ systemctl disable firewalld
   systemctl stop ceph-mds target
   ```
 
-## 创建存储池
+### 创建存储池
 
 - 列出已经创建的存储池
 
@@ -301,7 +303,7 @@ systemctl disable firewalld
   ceph osd pool rename test ceph
   ```
 
-## 查看存储池属性
+### 查看存储池属性
 
 - 查看对象副本数
 
@@ -321,7 +323,7 @@ systemctl disable firewalld
   ceph osd pool get ceph pg_num
   ```
 
-## 删除存储池
+### 删除存储池
 
 - 在配置文件中写入
 
@@ -348,7 +350,7 @@ systemctl disable firewalld
   ceph osd pool rm ceph ceph --yes-i-really-really-mean-it
   ```
 
-## 状态检查
+### 状态检查
 
 - 检查集群的状态
 
@@ -373,7 +375,7 @@ systemctl disable firewalld
   ceph quorum_status
   ```
 
-## 为存储池指定Ceph应用类型
+### 为存储池指定Ceph应用类型
 
 ```bash
 ceph osd pool application enable ceph <app>
@@ -381,7 +383,7 @@ ceph osd pool application enable ceph <app>
 
 `<app>`可以选择`cephfs`，`rbd`，`rgw`。
 
-## 存储池配额管理
+### 存储池配额管理
 
 - 根据对象数配额
 
@@ -395,7 +397,7 @@ ceph osd pool application enable ceph <app>
   ceph osd pool set-quota ceph max_bytes 1048576
   ```
 
-## 存储池对象访问
+### 存储池对象访问
 
 - 上传对象到存储池
 
@@ -445,3 +447,9 @@ ceph osd pool application enable ceph <app>
     pgs:     64 active+clean
 ```
 
+这是分布式部署的结果，为完成在单机上的优化任务，我们也进行了单机部署。其过程是分布式部署的子过程，在此不再赘述。
+
+## 参考资料
+
+- [x-KATA-Unikernel/lab4 at main](https://github.com/OSH-2021/x-KATA-Unikernel/blob/main/lab4/)
+- [Ceph部署实践——基于最新版Ceph14以及Centos7（初级课程）](https://www.bilibili.com/video/BV1PZ4y1L7c3?spm_id_from=333.1007.top_right_bar_window_custom_collection.content.click)

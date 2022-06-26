@@ -1,203 +1,18 @@
-3osd
+# ceph测试与分析文档
 
-````bash
-[root@client _myceph]# rados bench -p test 10 write -b 1M --no-cleanup
-hints = 1
-Maintaining 16 concurrent writes of 1048576 bytes to objects of size 1048576 for up to 10 seconds or 0 objects
-Object prefix: benchmark_data_client_4339
-  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
-    0      16        48        32   315.836        -1   0.0397934   0.0469811
-    1      16       503       487   441.663       455   0.0382358   0.0350493
-    2      16       985       969   460.521       482   0.0576467   0.0343215
-    3      16      1432      1416   456.142       447   0.0442389   0.0348378
-    4      16      1912      1896   461.862       480   0.0455097   0.0344481
-    5      16      2422      2406   471.263       510  0.00524424   0.0338161
-    6      16      2911      2895   474.081       489   0.0115181   0.0337161
-    7      16      3393      3377   475.144       482   0.0455363    0.033607
-    8      16      3840      3824   471.616       447   0.0174148   0.0338197
-    9      16      4264      4248   466.206       424   0.0534691   0.0342532
-Total time run:         10.0295
-Total writes made:      4694
-Write size:             1048576
-Object size:            1048576
-Bandwidth (MB/sec):     468.018
-Stddev Bandwidth:       26.754
-Max bandwidth (MB/sec): 510
-Min bandwidth (MB/sec): 424
-Average IOPS:           468
-Stddev IOPS:            26.754
-Max IOPS:               510
-Min IOPS:               424
-Average Latency(s):     0.0341819
-Stddev Latency(s):      0.0179448
-Max latency(s):         0.098925
-Min latency(s):         0.00198472
-```
-````
+这份文档包括所选指标的合理性、测试数据以及相应分析。
 
-```bash
-[root@client _myceph]# rados bench -p test 10 seq 
-hints = 1
-  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
-    0      16        35        19    180.43        -1   0.0412738   0.0599454
-    1      16       163       147   132.963       128  0.00203268    0.107557
-    2      16       307       291   138.005       144  0.00298124    0.105361
-    3      16       405       389   125.076        98   0.0216575     0.11962
-    4      16       476       460   110.991        71    0.255951     0.12562
-    5      16       515       499   96.9262        39    0.317209      0.1522
-    6      16       542       526   85.1424        27   0.0651152    0.164755
-    7      16       544       528   73.5248         2    0.553982     0.16628
-    8      16       566       550   67.2237        22   0.0203321    0.199504
-    9      16       566       550   59.8988         0           -    0.199504
-   10      16       566       550   54.0143         0           -    0.199504
-   11      16       566       550   49.1832         0           -    0.199504
-Total time run:       11.368
-Total reads made:     567
-Read size:            1048576
-Object size:          1048576
-Bandwidth (MB/sec):   49.877
-Average IOPS:         49
-Stddev IOPS:          53.731
-Max IOPS:             144
-Min IOPS:             0
-Average Latency(s):   0.320493
-Max latency(s):       5.65614
-Min latency(s):       0.00172768
+## 所选指标的合理性：
 
-```
+- 读速率、写速率：
+- 读延迟、写延迟：
+- 空间效率：
 
-```bash
-[root@client _myceph]# rados bench -p test 10 rand
-hints = 1
-  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
-    0      16        42        26   288.869        -1   0.0306176   0.0475517
-    1      16       254       238   218.236       212   0.0203588   0.0660896
-    2      16       449       433   199.357       195    0.312685   0.0756134
-    3      16       627       611   191.526       178  0.00200308   0.0792271
-    4      16       781       765   182.371       154  0.00645116   0.0845192
-    5      16       899       883   169.831       118   0.0202018   0.0910958
-    6      16      1066      1050   169.282       167   0.0191228   0.0935629
-    7      16      1199      1183   164.164       133    0.520474   0.0944904
-    8      16      1344      1328   161.639       145  0.00341728   0.0966671
-    9      16      1488      1472    159.66       144   0.0585948   0.0984351
-Total time run:       10.2165
-Total reads made:     1589
-Read size:            1048576
-Object size:          1048576
-Bandwidth (MB/sec):   155.533
-Average IOPS:         155
-Stddev IOPS:          30.2242
-Max IOPS:             212
-Min IOPS:             118
-Average Latency(s):   0.102632
-Max latency(s):       0.713355
-Min latency(s):       0.000702878
+## 单机版测试与优化
 
-```
+这部分主要通过改变部署方式（增加osd的数量）进行优化。
 
-2osd
-
-```bash
-[root@client _myceph]# rados bench -p test 10 write -b 1M 
-hints = 1
-Maintaining 16 concurrent writes of 1048576 bytes to objects of size 1048576 for up to 10 seconds or 0 objects
-Object prefix: benchmark_data_client_4554
-  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
-    0      16        44        28   259.605        -1   0.0425564   0.0482161
-    1      16       440       424   381.911       396   0.0398951    0.040804
-    2      16       855       839   397.347       415  0.00439466   0.0396624
-    3      16      1242      1226   393.969       387   0.0522183   0.0402444
-    4      16      1656      1640   398.649       414   0.0475978   0.0400131
-    5      16      2034      2018   394.582       378  0.00218717   0.0403615
-    6      16      2439      2423   396.047       405   0.0596889    0.040216
-    7      16      2847      2831   397.656       408    0.070415   0.0401435
-    8      16      3237      3221   396.699       390  0.00238422   0.0401707
-    9      16      3628      3612   396.017       391   0.0462859   0.0403205
-Total time run:         10.0321
-Total writes made:      3966
-Write size:             1048576
-Object size:            1048576
-Bandwidth (MB/sec):     395.331
-Stddev Bandwidth:       12.9013
-Max bandwidth (MB/sec): 415
-Min bandwidth (MB/sec): 378
-Average IOPS:           395
-Stddev IOPS:            12.9013
-Max IOPS:               415
-Min IOPS:               378
-Average Latency(s):     0.0404706
-Stddev Latency(s):      0.023359
-Max latency(s):         0.117381
-Min latency(s):         0.00187149
-Cleaning up (deleting benchmark objects)
-Removed 3966 objects
-Clean up completed and total clean up time :2.4537
-```
-
-```bash
-[root@client _myceph]# rados bench -p test 10 seq 
-hints = 1
-  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
-    0      16        43        27   289.127        -1  0.00765354   0.0328734
-    1      16       230       214   192.294       187  0.00213297    0.069222
-    2      16       394       378   178.662       164  0.00190267   0.0816718
-    3      16       538       522   167.384       144     0.27948   0.0908227
-    4      16       679       663   160.935       141  0.00389771   0.0936001
-    5      16       831       815   159.111       152  0.00267032   0.0973143
-    6      16       949       933   152.352       118    0.492846    0.100584
-    7      16      1049      1033   144.988       100  0.00243579    0.105975
-    8      16      1167      1151   141.614       118  0.00261998    0.109753
-    9      16      1277      1261   138.105       110   0.0382533    0.113708
-   10      16      1373      1357   133.917        96  0.00238249    0.113754
-Total time run:       10.2674
-Total reads made:     1373
-Read size:            1048576
-Object size:          1048576
-Bandwidth (MB/sec):   133.724
-Average IOPS:         133
-Stddev IOPS:          29.5522
-Max IOPS:             187
-Min IOPS:             96
-Average Latency(s):   0.119154
-Max latency(s):       0.877031
-Min latency(s):       0.00169028
-
-
-```
-
-```bash
-[root@client _myceph]# rados bench -p test 10 rand
-hints = 1
-  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
-    0      16        20         4   64.2405        -1    0.061695   0.0498666
-    1      16       175       159   149.014       155  0.00342335   0.0940069
-    2      16       308       292   140.829       133  0.00164816    0.103315
-    3      16       459       443   144.071       151    0.139503    0.108262
-    4      16       573       557   136.536       114   0.0304965    0.105259
-    5      15       690       675   132.636       118    0.165019    0.116493
-    6      16       830       814   133.602       139   0.0650048    0.117458
-    7      16       952       936   131.935       122    0.120703    0.119645
-    8      16      1056      1040   128.463       104    0.410748    0.121086
-    9      16      1173      1157    127.03       117    0.120124     0.12476
-   10      12      1294      1282   126.789       125    0.179171     0.12416
-Total time run:       10.1192
-Total reads made:     1294
-Read size:            1048576
-Object size:          1048576
-Bandwidth (MB/sec):   127.876
-Average IOPS:         127
-Stddev IOPS:          16.4708
-Max IOPS:             155
-Min IOPS:             104
-Average Latency(s):   0.124899
-Max latency(s):       1.10246
-Min latency(s):       0.000712677
-
-```
-
-
-
-1osd
+### 1osd-write
 
 ```bash
 [root@client _myceph]# rados bench -p test 10 write -b 1M 
@@ -237,6 +52,8 @@ Clean up completed and total clean up time :3.5162
 
 ```
 
+### 1osd-sequence-read
+
 ```bash
 [root@client _myceph]# rados bench -p test 10 seq 
 hints = 1
@@ -266,6 +83,8 @@ Max latency(s):       0.638654
 Min latency(s):       0.00178622
 
 ```
+
+### 1osd-random-read
 
 ```bash
 [root@client _myceph]# rados bench -p test 10 rand
@@ -299,9 +118,223 @@ Min latency(s):       0.000595477
 
 
 
-## 写
+### 2osd-write
 
-8
+```bash
+[root@client _myceph]# rados bench -p test 10 write -b 1M 
+hints = 1
+Maintaining 16 concurrent writes of 1048576 bytes to objects of size 1048576 for up to 10 seconds or 0 objects
+Object prefix: benchmark_data_client_4554
+  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
+    0      16        44        28   259.605        -1   0.0425564   0.0482161
+    1      16       440       424   381.911       396   0.0398951    0.040804
+    2      16       855       839   397.347       415  0.00439466   0.0396624
+    3      16      1242      1226   393.969       387   0.0522183   0.0402444
+    4      16      1656      1640   398.649       414   0.0475978   0.0400131
+    5      16      2034      2018   394.582       378  0.00218717   0.0403615
+    6      16      2439      2423   396.047       405   0.0596889    0.040216
+    7      16      2847      2831   397.656       408    0.070415   0.0401435
+    8      16      3237      3221   396.699       390  0.00238422   0.0401707
+    9      16      3628      3612   396.017       391   0.0462859   0.0403205
+Total time run:         10.0321
+Total writes made:      3966
+Write size:             1048576
+Object size:            1048576
+Bandwidth (MB/sec):     395.331
+Stddev Bandwidth:       12.9013
+Max bandwidth (MB/sec): 415
+Min bandwidth (MB/sec): 378
+Average IOPS:           395
+Stddev IOPS:            12.9013
+Max IOPS:               415
+Min IOPS:               378
+Average Latency(s):     0.0404706
+Stddev Latency(s):      0.023359
+Max latency(s):         0.117381
+Min latency(s):         0.00187149
+Cleaning up (deleting benchmark objects)
+Removed 3966 objects
+Clean up completed and total clean up time :2.4537
+```
+
+### 2osd-sequence-read
+
+```bash
+[root@client _myceph]# rados bench -p test 10 seq 
+hints = 1
+  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
+    0      16        43        27   289.127        -1  0.00765354   0.0328734
+    1      16       230       214   192.294       187  0.00213297    0.069222
+    2      16       394       378   178.662       164  0.00190267   0.0816718
+    3      16       538       522   167.384       144     0.27948   0.0908227
+    4      16       679       663   160.935       141  0.00389771   0.0936001
+    5      16       831       815   159.111       152  0.00267032   0.0973143
+    6      16       949       933   152.352       118    0.492846    0.100584
+    7      16      1049      1033   144.988       100  0.00243579    0.105975
+    8      16      1167      1151   141.614       118  0.00261998    0.109753
+    9      16      1277      1261   138.105       110   0.0382533    0.113708
+   10      16      1373      1357   133.917        96  0.00238249    0.113754
+Total time run:       10.2674
+Total reads made:     1373
+Read size:            1048576
+Object size:          1048576
+Bandwidth (MB/sec):   133.724
+Average IOPS:         133
+Stddev IOPS:          29.5522
+Max IOPS:             187
+Min IOPS:             96
+Average Latency(s):   0.119154
+Max latency(s):       0.877031
+Min latency(s):       0.00169028
+
+
+```
+
+### 2osd-random-read
+
+```bash
+[root@client _myceph]# rados bench -p test 10 rand
+hints = 1
+  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
+    0      16        20         4   64.2405        -1    0.061695   0.0498666
+    1      16       175       159   149.014       155  0.00342335   0.0940069
+    2      16       308       292   140.829       133  0.00164816    0.103315
+    3      16       459       443   144.071       151    0.139503    0.108262
+    4      16       573       557   136.536       114   0.0304965    0.105259
+    5      15       690       675   132.636       118    0.165019    0.116493
+    6      16       830       814   133.602       139   0.0650048    0.117458
+    7      16       952       936   131.935       122    0.120703    0.119645
+    8      16      1056      1040   128.463       104    0.410748    0.121086
+    9      16      1173      1157    127.03       117    0.120124     0.12476
+   10      12      1294      1282   126.789       125    0.179171     0.12416
+Total time run:       10.1192
+Total reads made:     1294
+Read size:            1048576
+Object size:          1048576
+Bandwidth (MB/sec):   127.876
+Average IOPS:         127
+Stddev IOPS:          16.4708
+Max IOPS:             155
+Min IOPS:             104
+Average Latency(s):   0.124899
+Max latency(s):       1.10246
+Min latency(s):       0.000712677
+
+```
+
+### 3osd-write
+
+````bash
+[root@client _myceph]# rados bench -p test 10 write -b 1M --no-cleanup
+hints = 1
+Maintaining 16 concurrent writes of 1048576 bytes to objects of size 1048576 for up to 10 seconds or 0 objects
+Object prefix: benchmark_data_client_4339
+  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
+    0      16        48        32   315.836        -1   0.0397934   0.0469811
+    1      16       503       487   441.663       455   0.0382358   0.0350493
+    2      16       985       969   460.521       482   0.0576467   0.0343215
+    3      16      1432      1416   456.142       447   0.0442389   0.0348378
+    4      16      1912      1896   461.862       480   0.0455097   0.0344481
+    5      16      2422      2406   471.263       510  0.00524424   0.0338161
+    6      16      2911      2895   474.081       489   0.0115181   0.0337161
+    7      16      3393      3377   475.144       482   0.0455363    0.033607
+    8      16      3840      3824   471.616       447   0.0174148   0.0338197
+    9      16      4264      4248   466.206       424   0.0534691   0.0342532
+Total time run:         10.0295
+Total writes made:      4694
+Write size:             1048576
+Object size:            1048576
+Bandwidth (MB/sec):     468.018
+Stddev Bandwidth:       26.754
+Max bandwidth (MB/sec): 510
+Min bandwidth (MB/sec): 424
+Average IOPS:           468
+Stddev IOPS:            26.754
+Max IOPS:               510
+Min IOPS:               424
+Average Latency(s):     0.0341819
+Stddev Latency(s):      0.0179448
+Max latency(s):         0.098925
+Min latency(s):         0.00198472
+```
+````
+
+### 3osd-sequence-read
+
+```bash
+[root@client _myceph]# rados bench -p test 10 seq 
+hints = 1
+  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
+    0      16        35        19    180.43        -1   0.0412738   0.0599454
+    1      16       163       147   132.963       128  0.00203268    0.107557
+    2      16       307       291   138.005       144  0.00298124    0.105361
+    3      16       405       389   125.076        98   0.0216575     0.11962
+    4      16       476       460   110.991        71    0.255951     0.12562
+    5      16       515       499   96.9262        39    0.317209      0.1522
+    6      16       542       526   85.1424        27   0.0651152    0.164755
+    7      16       544       528   73.5248         2    0.553982     0.16628
+    8      16       566       550   67.2237        22   0.0203321    0.199504
+    9      16       566       550   59.8988         0           -    0.199504
+   10      16       566       550   54.0143         0           -    0.199504
+   11      16       566       550   49.1832         0           -    0.199504
+Total time run:       11.368
+Total reads made:     567
+Read size:            1048576
+Object size:          1048576
+Bandwidth (MB/sec):   49.877
+Average IOPS:         49
+Stddev IOPS:          53.731
+Max IOPS:             144
+Min IOPS:             0
+Average Latency(s):   0.320493
+Max latency(s):       5.65614
+Min latency(s):       0.00172768
+
+```
+
+### 3osd-random-read
+
+```bash
+[root@client _myceph]# rados bench -p test 10 rand
+hints = 1
+  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
+    0      16        42        26   288.869        -1   0.0306176   0.0475517
+    1      16       254       238   218.236       212   0.0203588   0.0660896
+    2      16       449       433   199.357       195    0.312685   0.0756134
+    3      16       627       611   191.526       178  0.00200308   0.0792271
+    4      16       781       765   182.371       154  0.00645116   0.0845192
+    5      16       899       883   169.831       118   0.0202018   0.0910958
+    6      16      1066      1050   169.282       167   0.0191228   0.0935629
+    7      16      1199      1183   164.164       133    0.520474   0.0944904
+    8      16      1344      1328   161.639       145  0.00341728   0.0966671
+    9      16      1488      1472    159.66       144   0.0585948   0.0984351
+Total time run:       10.2165
+Total reads made:     1589
+Read size:            1048576
+Object size:          1048576
+Bandwidth (MB/sec):   155.533
+Average IOPS:         155
+Stddev IOPS:          30.2242
+Max IOPS:             212
+Min IOPS:             118
+Average Latency(s):   0.102632
+Max latency(s):       0.713355
+Min latency(s):       0.000702878
+
+```
+
+## 分布式测试与优化
+
+主要通过更改`number of replacement group`进行优化。
+
+### 空间效率
+
+未存文件时，60GB占用329MB，空间效率为
+$$
+1-\frac{329MB}{60GB}=99.46\%.
+$$
+
+### 8pg-write
 
 ```bash
 [root@client my-cluster]#  rados bench -p test_8 10 write --no-cleanup
@@ -339,6 +372,8 @@ Min latency(s):         0.230416
 
 ```
 
+用脚本连跑10次：
+
 ```bash
 [root@client my-cluster]# for i in {1..10}; do rados bench -p test_8 10 write | grep Bandwidth; done;
 Bandwidth (MB/sec):     70.9982
@@ -363,7 +398,63 @@ Bandwidth (MB/sec):     71.6354
 Stddev Bandwidth:       4.32049
 ```
 
-16
+### 8pg-sequence-read
+
+```bash
+[root@client my-cluster]#  rados bench -p test_8 10 seq
+hints = 1
+  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
+    0      16        16         0         0         0           -           0
+    1      16        53        37   147.603       148     0.56629    0.315909
+    2      16        92        76   150.957       156    0.550441    0.360593
+    3      16       138       122   161.879       184    0.564467    0.360517
+    4      16       180       164   163.132       168   0.0508285    0.361427
+Total time run:       4.43588
+Total reads made:     182
+Read size:            4194304
+Object size:          4194304
+Bandwidth (MB/sec):   164.116
+Average IOPS:         41
+Stddev IOPS:          3.91578
+Max IOPS:             46
+Min IOPS:             37
+Average Latency(s):   0.387108
+Max latency(s):       0.855932
+Min latency(s):       0.0373963
+```
+
+### 8pg-random-read
+
+```bash
+[root@client my-cluster]#  rados bench -p test_8 10 rand
+hints = 1
+  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
+    0      16        16         0         0         0           -           0
+    1      16        57        41   162.225       164    0.394185    0.313881
+    2      16       103        87   172.289       184    0.590387    0.318584
+    3      16       147       131   173.492       176    0.530192    0.334501
+    4      16       193       177   175.626       184    0.539281    0.343829
+    5      16       242       226   179.598       196    0.276983     0.34077
+    6      16       286       270   178.891       176    0.451878    0.341451
+    7      16       325       309   175.438       156     0.53717    0.349327
+    8      16       369       353   175.484       176    0.353216    0.353552
+    9      16       407       391   172.859       152    0.389605    0.358642
+   10      16       449       433   172.361       168    0.241728    0.356825
+Total time run:       10.3253
+Total reads made:     449
+Read size:            4194304
+Object size:          4194304
+Bandwidth (MB/sec):   173.942
+Average IOPS:         43
+Stddev IOPS:          3.36815
+Max IOPS:             49
+Min IOPS:             38
+Average Latency(s):   0.36492
+Max latency(s):       1.0998
+Min latency(s):       0.0496737
+```
+
+### 16pg-write
 
 ```bash
 [root@client my-cluster]#  rados bench -p test_16 10 write --no-cleanup
@@ -401,6 +492,8 @@ Min latency(s):         0.194607
 
 ```
 
+用脚本连跑10次：
+
 ```bash
 [root@client my-cluster]# for i in {1..10}; do rados bench -p test_16 10 write | grep Bandwidth ; done; 
 Bandwidth (MB/sec):     47.7262
@@ -425,7 +518,62 @@ Bandwidth (MB/sec):     28.7125
 Stddev Bandwidth:       25.3061
 ```
 
-32
+### 16pg-sequence-read
+
+```bash
+[root@client my-cluster]#  rados bench -p test_16 10 seq
+hints = 1
+  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
+    0      16        16         0         0         0           -           0
+    1      16        56        40   159.348       160    0.326553    0.320181
+    2      16       104        88   175.336       192    0.228901    0.331938
+    3      16       151       135   179.324       188     0.19516    0.325194
+Total time run:       3.79384
+Total reads made:     172
+Read size:            4194304
+Object size:          4194304
+Bandwidth (MB/sec):   181.347
+Average IOPS:         45
+Stddev IOPS:          4.3589
+Max IOPS:             48
+Min IOPS:             40
+Average Latency(s):   0.347133
+Max latency(s):       0.915117
+Min latency(s):       0.0508127
+```
+
+### 16pg-random-read
+
+```bash
+[root@client my-cluster]#  rados bench -p test_16 10 rand
+hints = 1
+  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
+    0      16        16         0         0         0           -           0
+    1      16        59        43   171.323       172    0.359316    0.305298
+    2      16       106        90   179.279       188    0.456037    0.325008
+    3      16       151       135   179.319       180    0.261287    0.332835
+    4      16       197       181   180.412       184    0.270819    0.334968
+    5      16       246       230   183.485       196    0.388057    0.334519
+    6      16       295       279   185.379       196     0.16984    0.331741
+    7      16       343       327   186.053       192    0.539083    0.331911
+    8      16       391       375   186.725       192    0.640498    0.328558
+    9      16       438       422   186.795       188    0.519163    0.333108
+   10      16       480       464   184.824       168    0.202598    0.332573
+Total time run:       10.2999
+Total reads made:     480
+Read size:            4194304
+Object size:          4194304
+Bandwidth (MB/sec):   186.41
+Average IOPS:         46
+Stddev IOPS:          2.41293
+Max IOPS:             49
+Min IOPS:             42
+Average Latency(s):   0.341056
+Max latency(s):       1.02721
+Min latency(s):       0.0354267
+```
+
+### 32pg-write
 
 ```bash
 [root@client my-cluster]#  rados bench -p test_32 10 write --no-cleanup
@@ -463,6 +611,8 @@ Min latency(s):         0.137962
 
 ```
 
+用脚本连跑10次：
+
 ```bash
 [root@client my-cluster]# for i in {1..10}; do rados bench -p test_32 10 write | grep Bandwidth; done; 
 Bandwidth (MB/sec):     59.9439
@@ -488,7 +638,63 @@ Stddev Bandwidth:       28.1457
 
 ```
 
-64
+### 32pg-sequence-read
+
+```bash
+[root@client my-cluster]#  rados bench -p test_32 10 seq
+hints = 1
+  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
+    0      16        16         0         0         0           -           0
+    1      16        59        43   171.228       172   0.0385992    0.271958
+    2       9        95        86   171.577       172    0.471282    0.309397
+Total time run:       2.08768
+Total reads made:     95
+Read size:            4194304
+Object size:          4194304
+Bandwidth (MB/sec):   182.02
+Average IOPS:         45
+Stddev IOPS:          0
+Max IOPS:             43
+Min IOPS:             43
+Average Latency(s):   0.338115
+Max latency(s):       0.95363
+Min latency(s):       0.0385992
+
+```
+
+### 32pg-random-read
+
+```bash
+[root@client my-cluster]#  rados bench -p test_32 10 rand
+hints = 1
+  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
+    0      16        16         0         0         0           -           0
+    1      16        61        45   179.422       180     0.74929    0.254532
+    2      16       104        88   175.204       172    0.850363    0.315815
+    3      16       148       132   175.366       176    0.276546    0.331044
+    4      16       195       179   178.366       188    0.521309    0.332102
+    5      16       242       226   179.855       188    0.314342     0.34131
+    6      16       290       274   181.685       192   0.0828243    0.333258
+    7      16       340       324   184.193       200    0.384122    0.333196
+    8      16       390       374   186.026       200    0.684799    0.332075
+    9      16       438       422   186.568       192    0.326386    0.334081
+   10      14       484       470   187.099       192    0.147517    0.330817
+Total time run:       10.2976
+Total reads made:     484
+Read size:            4194304
+Object size:          4194304
+Bandwidth (MB/sec):   188.005
+Average IOPS:         47
+Stddev IOPS:          2.35702
+Max IOPS:             50
+Min IOPS:             43
+Average Latency(s):   0.33597
+Max latency(s):       0.861435
+Min latency(s):       0.0396284
+
+```
+
+### 64pg-write
 
 ```bash
 [root@client my-cluster]#  rados bench -p test_64 10 write --no-cleanup
@@ -551,84 +757,7 @@ Stddev Bandwidth:       15.2257
 
 ```
 
-
-
-## 顺序读
-
-8
-
-```bash
-[root@client my-cluster]#  rados bench -p test_8 10 seq
-hints = 1
-  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
-    0      16        16         0         0         0           -           0
-    1      16        53        37   147.603       148     0.56629    0.315909
-    2      16        92        76   150.957       156    0.550441    0.360593
-    3      16       138       122   161.879       184    0.564467    0.360517
-    4      16       180       164   163.132       168   0.0508285    0.361427
-Total time run:       4.43588
-Total reads made:     182
-Read size:            4194304
-Object size:          4194304
-Bandwidth (MB/sec):   164.116
-Average IOPS:         41
-Stddev IOPS:          3.91578
-Max IOPS:             46
-Min IOPS:             37
-Average Latency(s):   0.387108
-Max latency(s):       0.855932
-Min latency(s):       0.0373963
-```
-
-16
-
-```bash
-[root@client my-cluster]#  rados bench -p test_16 10 seq
-hints = 1
-  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
-    0      16        16         0         0         0           -           0
-    1      16        56        40   159.348       160    0.326553    0.320181
-    2      16       104        88   175.336       192    0.228901    0.331938
-    3      16       151       135   179.324       188     0.19516    0.325194
-Total time run:       3.79384
-Total reads made:     172
-Read size:            4194304
-Object size:          4194304
-Bandwidth (MB/sec):   181.347
-Average IOPS:         45
-Stddev IOPS:          4.3589
-Max IOPS:             48
-Min IOPS:             40
-Average Latency(s):   0.347133
-Max latency(s):       0.915117
-Min latency(s):       0.0508127
-```
-
-32
-
-```bash
-[root@client my-cluster]#  rados bench -p test_32 10 seq
-hints = 1
-  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
-    0      16        16         0         0         0           -           0
-    1      16        59        43   171.228       172   0.0385992    0.271958
-    2       9        95        86   171.577       172    0.471282    0.309397
-Total time run:       2.08768
-Total reads made:     95
-Read size:            4194304
-Object size:          4194304
-Bandwidth (MB/sec):   182.02
-Average IOPS:         45
-Stddev IOPS:          0
-Max IOPS:             43
-Min IOPS:             43
-Average Latency(s):   0.338115
-Max latency(s):       0.95363
-Min latency(s):       0.0385992
-
-```
-
-64
+### 64pg-sequence-read
 
 ```bash
 [root@client my-cluster]#  rados bench -p test_64 10 seq
@@ -652,103 +781,7 @@ Min latency(s):       0.0560291
 
 ```
 
-## 随机读
-
-8
-
-```bash
-[root@client my-cluster]#  rados bench -p test_8 10 rand
-hints = 1
-  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
-    0      16        16         0         0         0           -           0
-    1      16        57        41   162.225       164    0.394185    0.313881
-    2      16       103        87   172.289       184    0.590387    0.318584
-    3      16       147       131   173.492       176    0.530192    0.334501
-    4      16       193       177   175.626       184    0.539281    0.343829
-    5      16       242       226   179.598       196    0.276983     0.34077
-    6      16       286       270   178.891       176    0.451878    0.341451
-    7      16       325       309   175.438       156     0.53717    0.349327
-    8      16       369       353   175.484       176    0.353216    0.353552
-    9      16       407       391   172.859       152    0.389605    0.358642
-   10      16       449       433   172.361       168    0.241728    0.356825
-Total time run:       10.3253
-Total reads made:     449
-Read size:            4194304
-Object size:          4194304
-Bandwidth (MB/sec):   173.942
-Average IOPS:         43
-Stddev IOPS:          3.36815
-Max IOPS:             49
-Min IOPS:             38
-Average Latency(s):   0.36492
-Max latency(s):       1.0998
-Min latency(s):       0.0496737
-```
-
-16
-
-```bash
-[root@client my-cluster]#  rados bench -p test_16 10 rand
-hints = 1
-  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
-    0      16        16         0         0         0           -           0
-    1      16        59        43   171.323       172    0.359316    0.305298
-    2      16       106        90   179.279       188    0.456037    0.325008
-    3      16       151       135   179.319       180    0.261287    0.332835
-    4      16       197       181   180.412       184    0.270819    0.334968
-    5      16       246       230   183.485       196    0.388057    0.334519
-    6      16       295       279   185.379       196     0.16984    0.331741
-    7      16       343       327   186.053       192    0.539083    0.331911
-    8      16       391       375   186.725       192    0.640498    0.328558
-    9      16       438       422   186.795       188    0.519163    0.333108
-   10      16       480       464   184.824       168    0.202598    0.332573
-Total time run:       10.2999
-Total reads made:     480
-Read size:            4194304
-Object size:          4194304
-Bandwidth (MB/sec):   186.41
-Average IOPS:         46
-Stddev IOPS:          2.41293
-Max IOPS:             49
-Min IOPS:             42
-Average Latency(s):   0.341056
-Max latency(s):       1.02721
-Min latency(s):       0.0354267
-```
-
-32
-
-```bash
-[root@client my-cluster]#  rados bench -p test_32 10 rand
-hints = 1
-  sec Cur ops   started  finished  avg MB/s  cur MB/s last lat(s)  avg lat(s)
-    0      16        16         0         0         0           -           0
-    1      16        61        45   179.422       180     0.74929    0.254532
-    2      16       104        88   175.204       172    0.850363    0.315815
-    3      16       148       132   175.366       176    0.276546    0.331044
-    4      16       195       179   178.366       188    0.521309    0.332102
-    5      16       242       226   179.855       188    0.314342     0.34131
-    6      16       290       274   181.685       192   0.0828243    0.333258
-    7      16       340       324   184.193       200    0.384122    0.333196
-    8      16       390       374   186.026       200    0.684799    0.332075
-    9      16       438       422   186.568       192    0.326386    0.334081
-   10      14       484       470   187.099       192    0.147517    0.330817
-Total time run:       10.2976
-Total reads made:     484
-Read size:            4194304
-Object size:          4194304
-Bandwidth (MB/sec):   188.005
-Average IOPS:         47
-Stddev IOPS:          2.35702
-Max IOPS:             50
-Min IOPS:             43
-Average Latency(s):   0.33597
-Max latency(s):       0.861435
-Min latency(s):       0.0396284
-
-```
-
-64
+### 64pg-random-read
 
 ```bash
 [root@client my-cluster]#  rados bench -p test_64 10 rand
@@ -779,8 +812,37 @@ Max latency(s):       0.843696
 Min latency(s):       0.0468526
 ```
 
-## 空间效率
+## 分析评价
 
-存入13.72GB有用数据，占用17GB，空间效率80.71%
+### osd numbers 对性能的影响
 
-329MB
+![](./Osd_Read_Bandwidth.jpg)
+
+![Osd_Read_IOPS](./Osd_Read_IOPS.jpg)
+
+![Osd_Read_Latency](./Osd_Read_Latency.jpg)
+
+![Osd_Write_Bandwidth](./Osd_Write_Bandwidth.jpg)
+
+![Osd_Write_IOPS](./Osd_Write_IOPS.jpg)
+
+![Osd_Write_Latency](./Osd_Write_Latency.jpg)
+
+### pg numbers 对性能的影响
+
+![Read_Bandwidth](./Read_Bandwidth.jpg)
+
+![Read_IOPS](./Read_IOPS.jpg)
+
+![Read_Latency](./Read_Latency.jpg)
+
+可以看出，顺序读与随机读的性能，都是pg=32时最优，增大到64或减小到16都会使性能下降。
+
+![Write_Bandwidth](./Write_Bandwidth.jpg)
+
+![Write_IOPS](./Write_IOPS.jpg)
+
+![Write_Latency](./Write_Latency.jpg)
+
+可以看出，写的性能在pg=8时最优，增大pg数会使写性能降低，这与读的性能相反。
+
