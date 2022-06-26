@@ -1,4 +1,4 @@
-# Ceph部署文档
+# Ceph 部署文档
 
 ## 实验环境
 
@@ -12,13 +12,13 @@
 
 ## 环境配置
 
-### 安装VMware
+### 安装 VMware
 
-### 在VMware下安装CentOS
+### 在 VMware 下安装 CentOS
 
-- 增加硬盘：在VMware的Devices栏目中，新建设备，添加SCSI与NVMe硬盘各一块。
+- 增加硬盘：在 VMware 的 Devices 栏目中，新建设备，添加 SCSI 与 NVMe 硬盘各一块。
 
-- 配置网卡：打开Virtual Network Editor，将vmnet8的IP地址改为192.168.153.1。在VMware的Devices栏目中，新建设备，添加一个选择vmnet8的网卡。
+- 配置网卡：打开 Virtual Network Editor，将 vmnet8 的 IP 地址改为 192.168.153.1。在 VMware 的 Devices 栏目中，新建设备，添加一个选择 vmnet8 的网卡。
 
 - 配置网络：
 
@@ -27,9 +27,9 @@
   sudo vi ifcfg-ens33
   ```
 
-  将`ONBOOT=no`修改为`ONBOOT=yes`，IPV4与DNS服务器地址改为192.168.31.10。
+  将 `ONBOOT=no` 修改为 `ONBOOT=yes`，IPV4 与 DNS 服务器地址改为 192.168.31.10。
 
-  类似地将`ifcfg-ens35`文件中的`ONBOOT=no`修改为`ONBOOT=yes`，IPV4与DNS服务器地址改为192.168.153.10。
+  类似地将 `ifcfg-ens35` 文件中的 `ONBOOT=no` 修改为 `ONBOOT=yes` ，IPV4 与 DNS 服务器地址改为 192.168.153.10。
 
 - 重新启动网络服务：
 
@@ -37,11 +37,11 @@
   systemctl restart network
   ```
 
-  使用VMware的clone方式创建3台与之相同的虚拟机，并将其IP地址最后一段分别改为11，12，13。
+  使用 VMware 的 clone 方式创建 3 台与之相同的虚拟机，并将其IP地址最后一段分别改为 11，12，13。
 
-### SSH免密登录
+### SSH 免密登录
 
-client节点作为deploy节点，在client节点执行
+client 节点作为 deploy 节点，在 client 节点执行
 
 ```bash
 ssh-keygen
@@ -66,30 +66,30 @@ scp /etc/hosts node3:/etc/hosts
 
 ### 配置安全策略
 
-- 在client，node1，node2，node3节点上都关闭selinux：
+- 在 client，node1，node2，node3 节点上都关闭 selinux：
 
   ```bash
   vi /etc/selinux/config
   ```
 
-  将`SELINUX`值设置为`disabled`。
+  将 `SELINUX` 值设置为 `disabled`。
 
-- 在client，node1，node2，node3节点上都关闭防火墙：
+- 在 client，node1，node2，node3 节点上都关闭防火墙：
 
   ```bash
   systemctl stop firewalld
   systemctl disable firewalld
   ```
 
-### 配置ntp时间同步
+### 配置 ntp 时间同步
 
-- client节点作为ntp server，在client、node1、node2、node3上安装ntp。
+- client 节点作为 ntp server，在 client、node1、node2、node3 上安装 ntp。
 
   ```bash
   yum install ntp -y
   ```
 
-- 在node1、node2、node3上配置ntp，添加client节点作为时间服务器。
+- 在 node1、node2、node3 上配置 ntp，添加 client 节点作为时间服务器。
 
   ```bash
   vi /etc/ntp.conf
@@ -97,21 +97,21 @@ scp /etc/hosts node3:/etc/hosts
 
   写入server client iburst。
 
-- 开启ntp服务
+- 开启 ntp 服务
 
   ```bash
   systemctl start ntpd
   ```
 
-- 确认ntp服务器指向了client节点
+- 确认 ntp 服务器指向了 client 节点
 
   ```bash
   ntpq -pn
   ```
 
-### 配置yum源
+### 配置 yum 源
 
-- 添加CentOS7的yum源
+- 添加 CentOS7 的 yum 源
 
   ```bash
    sed -e 's|^mirrorlist=|#mirrorlist=|g' \
@@ -120,7 +120,7 @@ scp /etc/hosts node3:/etc/hosts
            /etc/yum.repos.d/CentOS-Base.repo
   ```
 
-- 添加epel的yum源
+- 添加 epel 的 yum 源
 
   ```bash
   sudo yum install -y epel-release
@@ -131,7 +131,7 @@ scp /etc/hosts node3:/etc/hosts
            /etc/yum.repos.d/epel.repo
   ```
 
-- 添加ceph的yum源
+- 添加 ceph 的 yum 源
 
   ```bash
   vi /etc/yum.repos.d/ceph.repo
@@ -152,30 +152,30 @@ scp /etc/hosts node3:/etc/hosts
 
 ## 软件安装
 
-### ceph相关的包的安装
+### ceph 相关的包的安装
 
-- 在部署节点（client）安装ceph的部署工具
+- 在部署节点（client）安装 ceph 的部署工具
 
   ```bash
   yum install python-setuptools -y
   yum install ceph-deploy -y
   ```
 
-- 确保ceph-deploy的版本是2.0.1
+- 确保 ceph-deploy 的版本是 2.0.1
 
   ```bash
   ceph-deploy --version
   ```
 
-- 在node1、node2、node3执行下面命令，安装ceph相关的包
+- 在 node1、node2、node3 执行下面命令，安装 ceph 相关的包
 
   ```bash
   yum install -y ceph ceph-mon ceph-osd ceph-mds ceph-radosgw ceph-mgr
   ```
 
-### 部署moni3tor
+### 部署 monitor
 
-- node1作为monitor节点，在部署结点（client）创建一个工作目录，后续的命令在该目录下执行，产生的配置文件保存在该目录中。
+- node1 作为 monitor 节点，在部署结点（client）创建一个工作目录，后续的命令在该目录下执行，产生的配置文件保存在该目录中。
 
   ```bash
   mkdir ~/my-cluster
@@ -183,7 +183,7 @@ scp /etc/hosts node3:/etc/hosts
   ceph-deploy new --public-network 192.168.31.0/24 --cluster-network 192.168.153.0/24 node1
   ```
 
-- 初始化monitor
+- 初始化 monitor
 
   ```bash
   ceph-deploy mon create-initial
@@ -195,29 +195,29 @@ scp /etc/hosts node3:/etc/hosts
   ceph-deploy admin node1 node2 node3
   ```
 
-- 部署高可用monitor，将node2、node3也加入mon集群。
+- 部署高可用 monitor，将 node2、node3 也加入 mon 集群。
 
   ```bash
   ceph-deploy mon add node2
   ceph-deplioy mon add node3
   ```
 
-### 部署mgr
+### 部署 mgr
 
-- node1作为mgr节点，在部署节点（client）执行
+- node1 作为 mgr 节点，在部署节点（client）执行
 
   ```bash
   cd my-cluster
   ceph-deploy mgr create node1
   ```
 
-- 部署高可用mgr，将node2、node3也添加进来
+- 部署高可用 mgr，将 node2、node3 也添加进来
 
   ```bash
   ceph-deploy mgr create node2 node3
   ```
 
-### 部署osd
+### 部署 osd
 
 - 确认每个节点的硬盘情况
 
@@ -225,7 +225,7 @@ scp /etc/hosts node3:/etc/hosts
   ceph-deploy disk list node1 node2 node3
   ```
 
-- 清理node1、node2、node3节点上硬盘上现有数据和文件系
+- 清理 node1、node2、node3 节点上硬盘上现有数据和文件系
 
   ```bash
   ceph-deploy disk zap node1 /dev/sdb
@@ -236,7 +236,7 @@ scp /etc/hosts node3:/etc/hosts
   ceph-deploy disk zap node3 /dev/nvme0n1
   ```
 
-- 添加OSD
+- 添加 OSD
 
   ```bash
   ceph-deploy osd create --data /dev/sdb --journal /dev/nvme0n1 --filestore node1
@@ -246,9 +246,9 @@ scp /etc/hosts node3:/etc/hosts
 
 ## 建立存储
 
-### 使用systemd管理ceph服务
+### 使用 systemd 管理 ceph 服务
 
-- 列出所有的ceph服务
+- 列出所有的 ceph 服务
 
   ```bash
   systemctl status ceph\*.service ceph\*.target
@@ -311,13 +311,13 @@ scp /etc/hosts node3:/etc/hosts
   ceph osd pool get ceph size
   ```
 
-- 查看pg数
+- 查看 pg 数
 
   ```bash
   ceph osd pool get ceph pg_num
   ```
 
-- 查看pgp数，一般小于等于pg_num
+- 查看 pgp 数，一般小于等于 pg_num
 
   ```bash
   ceph osd pool get ceph pg_num
@@ -361,27 +361,27 @@ scp /etc/hosts node3:/etc/hosts
   ceph health detail
   ```
 
-- 检查OSD状态
+- 检查 OSD 状态
 
   ```bash
   ceph osd status
   ceph osd tree
   ```
 
-- 检查Mon状态
+- 检查 Mon 状态
 
   ```bash
   ceph mon stat
   ceph quorum_status
   ```
 
-### 为存储池指定Ceph应用类型
+### 为存储池指定 Ceph 应用类型
 
 ```bash
 ceph osd pool application enable ceph <app>
 ```
 
-`<app>`可以选择`cephfs`，`rbd`，`rgw`。
+`<app> `可以选择 `cephfs`，`rbd`，`rgw`。
 
 ### 存储池配额管理
 
