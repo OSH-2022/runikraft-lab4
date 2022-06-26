@@ -835,6 +835,8 @@ Min latency(s):       0.0468526
 
 ![Osd_Write_Latency](./Osd_Write_Latency.jpg)
 
+我们使用概率论与数理统计的知识进行分析，有力地证明 bandwidth 和 latency 两个指标优化达到了20%。
+
 #### bandwidth
 
 >![](http://latex.codecogs.com/svg.latex?bw_{avg}): average bandwidth in 1 second
@@ -884,47 +886,45 @@ Min latency(s):       0.0468526
 |  8   |                         471.616                          |
 |  9   |                         466.206                          |
 
-在$99.5\%$置信度下，要检验问题：“osd2的$bw_{avg}$比osd1的高$20\%$​”，即检验"osd2的$bw_{avg}$大于osd1的$1.2\times bw_{avg}$"。将其设置为对立假设，假设检验问题为
-$$
-H_0:\mu_1 \geq \mu_2 \leftrightarrow H_1: \mu_1 < \mu_2
-$$
+在99.5%置信度下，要检验问题：“ 2osd 的![](http://latex.codecogs.com/svg.latex?bw_{avg})比 1osd 的高20%”，即检验" 2osd 的![](http://latex.codecogs.com/svg.latex?bw_{avg})大于 1osd 的![](http://latex.codecogs.com/svg.latex?1.2\times bw_{avg})"。将其设置为对立假设，假设检验问题为
+
+![](http://latex.codecogs.com/svg.latex?H_0:\mu_1\geq\mu_2\leftrightarrow H_1: \mu_1 < \mu_2)
+
 假设检验量为
-$$
-T=\frac{\mu_1-\mu_2}{\sqrt{S_w^2(\frac{1}{m} + \frac{1}{n})}}
-$$
-拒绝域取为$D=\{T < -t_{m+n-2}(\alpha)\}$。
+
+![](http://latex.codecogs.com/svg.latex?T=\frac{\mu_1-\mu_2}{\sqrt{S_w^2(\frac{1}{m} + \frac{1}{n})}})
+
+拒绝域取为![](http://latex.codecogs.com/svg.latex?D=\{T < -t_{m+n-2}(\alpha)\})。
 
 做一些计算:
 
-osd1: $\mu_1=278.949, S_1^2=1089.874, m=10$，
+1osd: ![](http://latex.codecogs.com/svg.latex?\mu_1=278.949, S_1^2=1089.874, m=10)，
 
-osd2: $\mu_2=381.248, S_2^2=1849.349,n=10$，
+2osd: ![](http://latex.codecogs.com/svg.latex?\mu_2=381.248, S_2^2=1849.349,n=10)，
 
-$S_w^2=\frac{(m-1)S_1^2+(n-1)S_2^2}{m+n-2}\approx 1469.612$。
+![](http://latex.codecogs.com/svg.latex?S_w^2=\frac{(m-1)S_1^2+(n-1)S_2^2}{m+n-2}\approx 1469.612)
 
-代入得$T\approx -5.967 < -t_{18}(0.005)=-2.878$，因此有足够的证据否定原假设，认为对立假设成立，即可以认为 osd2 的 write bandwidth 比 osd1 的 write bandwidth 性能高$20\%$。
+代入得![](http://latex.codecogs.com/svg.latex?T\approx -5.967 < -t_{18}(0.005)=-2.878)，因此有足够的证据否定原假设，认为对立假设成立，即可以认为 2osd 的 write bandwidth 比 1osd 的 write bandwidth 性能高20%。
 
-在$99.5\%$置信度下，要检验问题：“osd3的$bw_{avg}$比osd1的高$20\%$​”，即检验"osd3的$bw_{avg}$大于osd1的$1.2\times bw_{avg}$"。将其设置为对立假设，假设检验问题为
-$$
-H_0:\mu_1 \geq \mu_2 \leftrightarrow H_1: \mu_1 < \mu_2
-$$
+在99.5%置信度下，要检验问题：“ 3osd 的![](http://latex.codecogs.com/svg.latex?bw_{avg})比 1osd 的高20%”，即检验" 3osd 的$bw_{avg}$大于osd1的![](http://latex.codecogs.com/svg.latex?1.2\times bw_{avg})"。将其设置为对立假设，假设检验问题为
+
+![](http://latex.codecogs.com/svg.latex?H_0:\mu_1 \geq \mu_2 \leftrightarrow H_1: \mu_1 < \mu_2)
+
 假设检验量为
-$$
-T=\frac{\mu_1-\mu_2}{\sqrt{S_w^2(\frac{1}{m} + \frac{1}{n})}}
-$$
-拒绝域取为$D=\{T < -t_{m+n-2}(\alpha)\}$。
+
+![](http://latex.codecogs.com/svg.latex?T=\frac{\mu_1-\mu_2}{\sqrt{S_w^2(\frac{1}{m} + \frac{1}{n})}})
+
+拒绝域取为![](http://latex.codecogs.com/svg.latex?D=\{T < -t_{m+n-2}(\alpha)\})。
 
 做一些计算:
 
-osd1: $\mu_1=278.949, S_1^2=1089.874, m=10$，
+1osd: ![](http://latex.codecogs.com/svg.latex?\mu_1=278.949, S_1^2=1089.874, m=10)，
 
-osd2: $\mu_2=449.433, S_2^2=2305.501,n=10$，
+2osd: ![](http://latex.codecogs.com/svg.latex?\mu_2=449.433, S_2^2=2305.501,n=10)，
 
-$S_w^2=\frac{(m-1)S_1^2+(n-1)S_2^2}{m+n-2}\approx 1697.688$。
+![](http://latex.codecogs.com/svg.latex?S_w^2=\frac{(m-1)S_1^2+(n-1)S_2^2}{m+n-2}\approx 1697.688)
 
-代入得$T\approx -9.252 < -t_{18}(0.005)=-2.878$，因此有足够的证据否定原假设，认为对立假设成立，即可以认为 osd3 的 write bandwidth 比 osd1 的 write bandwidth 性能高$20\%$。
-
-##### 
+代入得![](http://latex.codecogs.com/svg.latex?T\approx -9.252 < -t_{18}(0.005)=-2.878)，因此有足够的证据否定原假设，认为对立假设成立，即可以认为 3osd 的 write bandwidth 比 1osd 的 write bandwidth 性能高20%。
 
 #### latency
 
@@ -932,7 +932,7 @@ $S_w^2=\frac{(m-1)S_1^2+(n-1)S_2^2}{m+n-2}\approx 1697.688$。
 
 1osd：
 
-| $sec$ | $lat_{avg}$ (s) | $0.8 \times lat_{avg}$ (s) |
+| sec | ![](http://latex.codecogs.com/svg.latex?lat_{avg}) (s) | ![](http://latex.codecogs.com/svg.latex?0.8 \times lat_{avg}) (s) |
 | :---: | :-------------: | :------------------------: |
 |   0   |    0.0733457    |         0.05867656         |
 |   1   |    0.0627875    |          0.05023           |
@@ -947,7 +947,7 @@ $S_w^2=\frac{(m-1)S_1^2+(n-1)S_2^2}{m+n-2}\approx 1697.688$。
 
 2osd：
 
-| $sec$ | $lat_{avg}$ (s) |
+| sec | ![](http://latex.codecogs.com/svg.latex?lat_{avg}) (s) |
 | :---: | :-------------: |
 |   0   |    0.0482161    |
 |   1   |    0.040804     |
@@ -962,7 +962,7 @@ $S_w^2=\frac{(m-1)S_1^2+(n-1)S_2^2}{m+n-2}\approx 1697.688$。
 
 3osd：
 
-| $sec$ | $lat_{avg}$ (s) |
+| sec | ![](http://latex.codecogs.com/svg.latex?lat_{avg}) (s) |
 | :---: | :-------------: |
 |   0   |    0.0469811    |
 |   1   |    0.0350493    |
@@ -975,45 +975,45 @@ $S_w^2=\frac{(m-1)S_1^2+(n-1)S_2^2}{m+n-2}\approx 1697.688$。
 |   8   |    0.0338197    |
 |   9   |    0.0342532    |
 
-在$99.5\%$置信度下，要检验问题：“ 2osd 的$lat_{avg}$比 1osd 的低$20\%$​”，即检验" 2osd 的$lat_{avg}$小于 1osd 的$0.8\times lat_{avg}$"。将其设置为对立假设，假设检验问题为
-$$
-H_0:\mu_1 \leq \mu_2 \leftrightarrow H_1: \mu_1 > \mu_2
-$$
+在99.5%置信度下，要检验问题：“ 2osd 的![](http://latex.codecogs.com/svg.latex?lat_{avg})比 1osd 的低20%”，即检验" 2osd 的![](http://latex.codecogs.com/svg.latex?lat_{avg})小于 1osd 的![](http://latex.codecogs.com/svg.latex?0.8\times lat_{avg})"。将其设置为对立假设，假设检验问题为
+
+![](http://latex.codecogs.com/svg.latex?H_0:\mu_1 \leq \mu_2 \leftrightarrow H_1: \mu_1 > \mu_2)
+
 假设检验量为
-$$
-T=\frac{\mu_1-\mu_2}{\sqrt{S_w^2(\frac{1}{m} + \frac{1}{n})}}
-$$
-拒绝域取为$D=\{T > t_{m+n-2}(\alpha)\}$。
+
+![](http://latex.codecogs.com/svg.latex?T=\frac{\mu_1-\mu_2}{\sqrt{S_w^2(\frac{1}{m} + \frac{1}{n})}})
+
+拒绝域取为![](http://latex.codecogs.com/svg.latex?D=\{T > t_{m+n-2}(\alpha)\})。
 
 做一些计算:
 
-1osd: $\mu_1=0.05278, S_1^2=5.070\times 10^{-6}, m=10$，
+1osd: ![](http://latex.codecogs.com/svg.latex?\mu_1=0.05278, S_1^2=5.070\times 10^{-6}, m=10)，
 
-2osd: $\mu_2=0.04101, S_2^2=6.492\times10^{-6},n=10$，
+2osd: ![](http://latex.codecogs.com/svg.latex?\mu_2=0.04101, S_2^2=6.492\times10^{-6},n=10)，
 
-$S_w^2=\frac{(m-1)S_1^2+(n-1)S_2^2}{m+n-2}\approx 5.781\times 10^{-6}$。
+![](http://latex.codecogs.com/svg.latex?S_w^2=\frac{(m-1)S_1^2+(n-1)S_2^2}{m+n-2}\approx 5.781\times 10^{-6})
 
-代入得$T\approx 10.946 > t_{18}(0.005)=2.878$，因此有足够的证据否定原假设，认为对立假设成立，即可以认为 2osd 的 write latency 比 1osd 的 write latency 性能高$20\%$。
+代入得![](http://latex.codecogs.com/svg.latex?T\approx 10.946 > t_{18}(0.005)=2.878)，因此有足够的证据否定原假设，认为对立假设成立，即可以认为 2osd 的 write latency 比 1osd 的 write latency 性能高20%。
 
-在$99.5\%$置信度下，要检验问题：“ 3osd 的$lat_{avg}$比 1osd 的低$20\%$​”，即检验" 3osd 的$lat_{avg}$小于 1osd 的$0.8\times lat_{avg}$"。将其设置为对立假设，假设检验问题为
-$$
-H_0:\mu_1 \leq \mu_2 \leftrightarrow H_1: \mu_1 > \mu_2
-$$
+在99.5%置信度下，要检验问题：“ 3osd 的![](http://latex.codecogs.com/svg.latex?lat_{avg})比 1osd 的低20%”，即检验" 3osd 的![](http://latex.codecogs.com/svg.latex?lat_{avg})小于 1osd 的![](http://latex.codecogs.com/svg.latex?0.8\times lat_{avg})"。将其设置为对立假设，假设检验问题为
+
+![](http://latex.codecogs.com/svg.latex?H_0:\mu_1 \leq \mu_2 \leftrightarrow H_1: \mu_1 > \mu_2)
+
 假设检验量为
-$$
-T=\frac{\mu_1-\mu_2}{\sqrt{S_w^2(\frac{1}{m} + \frac{1}{n})}}
-$$
-拒绝域取为$D=\{T > t_{m+n-2}(\alpha)\}$。
+
+![](http://latex.codecogs.com/svg.latex?T=\frac{\mu_1-\mu_2}{\sqrt{S_w^2(\frac{1}{m} + \frac{1}{n})}})
+
+拒绝域取为![](http://latex.codecogs.com/svg.latex?D=\{T > t_{m+n-2}(\alpha)\})。
 
 做一些计算:
 
-1osd: $\mu_1=0.05278, S_1^2=5.070\times 10^{-6}, m=10$，
+1osd: ![](http://latex.codecogs.com/svg.latex?\mu_1=0.05278, S_1^2=5.070\times 10^{-6}, m=10)，
 
-3osd: $\mu_2=0.03549, S_2^2=16.541\times10^{-6},n=10$，
+3osd: ![](http://latex.codecogs.com/svg.latex?\mu_2=0.03549, S_2^2=16.541\times10^{-6},n=10)，
 
-$S_w^2=\frac{(m-1)S_1^2+(n-1)S_2^2}{m+n-2}\approx 10.806\times 10^{-6}$。
+![](http://latex.codecogs.com/svg.latex?S_w^2=\frac{(m-1)S_1^2+(n-1)S_2^2}{m+n-2}\approx 10.806\times 10^{-6})
 
-代入得$T\approx 11.761 > t_{18}(0.005)=2.878$，因此有足够的证据否定原假设，认为对立假设成立，即可以认为 3osd 的 write latency 比 1osd 的 write latency 性能高$20\%$。
+代入得![](http://latex.codecogs.com/svg.latex?T\approx 11.761 > t_{18}(0.005)=2.878)，因此有足够的证据否定原假设，认为对立假设成立，即可以认为 3osd 的 write latency 比 1osd 的 write latency 性能高20%。
 
 ### pg numbers 对性能的影响
 
