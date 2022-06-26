@@ -335,10 +335,11 @@ Min latency(s):       0.000702878
 
 ### 空间效率
 
-未存文件时，60GB 占用 329MB，空间效率为
-$$
-1-\frac{329MB}{60GB}=99.46\%.
-$$
+
+未存文件时，60GB占用329MB，空间效率为  
+
+![](http://latex.codecogs.com/svg.latex?1-\frac{329MB}{60GB}=99.46\%)
+
 
 ### 8pg-write
 

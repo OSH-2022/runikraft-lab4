@@ -189,7 +189,7 @@ scp /etc/hosts node3:/etc/hosts
   ceph-deploy mon create-initial
   ```
 
-- 将配置文件拷贝到对应的节点
+- 将配置文件复制到对应的节点
 
   ```bash
   ceph-deploy admin node1 node2 node3
@@ -199,7 +199,7 @@ scp /etc/hosts node3:/etc/hosts
 
   ```bash
   ceph-deploy mon add node2
-  ceph-deplioy mon add node3
+  ceph-deploy mon add node3
   ```
 
 ### 部署 mgr
@@ -225,7 +225,7 @@ scp /etc/hosts node3:/etc/hosts
   ceph-deploy disk list node1 node2 node3
   ```
 
-- 清理 node1、node2、node3 节点上硬盘上现有数据和文件系
+- 清理 node1、node2、node3 节点上的硬盘里的现有数据和文件系统
 
   ```bash
   ceph-deploy disk zap node1 /dev/sdb
@@ -381,17 +381,17 @@ scp /etc/hosts node3:/etc/hosts
 ceph osd pool application enable ceph <app>
 ```
 
-`<app> `可以选择 `cephfs`，`rbd`，`rgw`。
+`<app> ` 可以选择  `cephfs`，`rbd`，`rgw`。
 
 ### 存储池配额管理
 
-- 根据对象数配额
+- 根据对象数设置配额
 
   ```bash
   ceph osd pool set-quota ceph max_objects 10000
   ```
 
-- 根据容量配额
+- 根据容量设置配额
 
   ```bash
   ceph osd pool set-quota ceph max_bytes 1048576
