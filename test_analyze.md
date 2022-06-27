@@ -823,6 +823,8 @@ Min latency(s):       0.0468526
 
 ### osd numbers 对性能的影响
 
+注：做完这部分实验后得知此部分不属于性能优化，故我们又做了后面的关于pg数的优化。
+
 ![](./src/Osd_Read_Bandwidth.jpg)
 
 ![Osd_Read_IOPS](./src/Osd_Read_IOPS.jpg)
@@ -886,7 +888,7 @@ Min latency(s):       0.0468526
 |  8   |                         471.616                          |
 |  9   |                         466.206                          |
 
-在99.5%置信度下，要检验问题：“ 2osd 的![](http://latex.codecogs.com/svg.latex?bw_{avg})比 1osd 的高20%”，即检验" 2osd 的![](http://latex.codecogs.com/svg.latex?bw_{avg})大于 1osd 的![](http://latex.codecogs.com/svg.latex?1.2\times bw_{avg})“。将其设置为对立假设，假设检验问题为
+在99.5%置信度下，要检验问题：“ 2osd 的![](http://latex.codecogs.com/svg.latex?bw_{avg})比 1osd 的高20%”，即检验" 2osd 的![](http://latex.codecogs.com/svg.latex?bw_{avg})大于 1osd 的![](http://latex.codecogs.com/svg.latex?1.2\times bw_{avg})“[。将其设置为对立假设，假设检验问题为
 
 ![](http://latex.codecogs.com/svg.latex?H_0:\mu_1\geq\mu_2\leftrightarrow H_1: \mu_1 < \mu_2)
 
@@ -1023,15 +1025,13 @@ Min latency(s):       0.0468526
 
 ![Read_Latency](./src/Read_Latency.jpg)
 
-可以看出，顺序读与随机读的性能，都是pg=32时最优，增大到64或减小到16都会使性能下降。
-
-![Write_Bandwidth](./src/Write_Bandwidth.jpg)
+我们将pg从8调为32后，通过上面3张图可知，随机读带宽、随机读IOPS、随机读延迟、顺序读带宽、顺序读IOPS、顺序读延迟分别优化达到8.08%，9.30%，9.04%，10.91%，10.98%，13.77%。![Write_Bandwidth](./src/Write_Bandwidth.jpg)
 
 ![Write_IOPS](./src/Write_IOPS.jpg)
 
 ![Write_Latency](./src/Write_Latency.jpg)
 
-可以看出，写的性能在 `pg = 8` 时最优，增大 pg 数会使写性能降低，这与读的性能相反。
+将pg从32调到8后，写带宽、写IOPS、写延迟分别优化达到95.94%，50.00%，50.54%。都达到了20%。其原因在于将每个存储池的 `placement of group ` 适当增加后，在写入时更容易找到一个适合写入的组，但是与此同时，读取时需要的效率会降低。
 
 
 
