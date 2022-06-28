@@ -10,7 +10,7 @@ A repository of Lab4 of Group Runikraft in OSH-2022.
 - 完成单机版部署并进行性能测试（5 分）。
 - 基于已有部署进行分析，进行测试和优化（2 分）。优化以 Ceph 本身的配置参数修改为主，给出了相应分析。提供证据说明单机优化后性能较初始部署提高 20%（1 分）。
 - 完成分布式部署并进行性能测试（1 分）。
-- 将撰写的相关报告发布到公开媒体（[项目主页](https://osh-2022.github.io/runikraft-lab4)及博客[https://gsxgoldenlegendary.github.io/2022/06/28/Operating_Systems/Deploy-Test-and-Analyze-of-Ceph/]）（1 分）。
+- 将撰写的相关报告发布到公开媒体（[项目主页](https://osh-2022.github.io/runikraft-lab4)及[博客](https://gsxgoldenlegendary.github.io/2022/06/28/Operating_Systems/Deploy-Test-and-Analyze-of-Ceph/)）（1 分）。
 
 ## 实验报告
 
